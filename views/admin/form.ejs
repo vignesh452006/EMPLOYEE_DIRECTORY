@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1><%= title %></h1>
+    <a href="/admin/employees" class="btn btn-ghost">&larr; Back to list</a>
+  </header>
+
+  <section class="panel fade-up form-panel">
+    <form action="<%= formAction %>" method="<%= method %>" enctype="multipart/form-data" class="employee-form">
+      <div class="form-grid">
+        <label class="span-2">Full Name *
+          <input type="text" name="full_name" required value="<%= employee.full_name || '' %>" placeholder="Jane Doe">
+        </label>
+        <label>Email *
+          <input type="email" name="email" required value="<%= employee.email || '' %>" placeholder="jane@company.com">
+        </label>
+        <label>Phone
+          <input type="text" name="phone" value="<%= employee.phone || '' %>" placeholder="+1 555 555 0100">
+        </label>
+        <label>Job Title
+          <input type="text" name="job_title" value="<%= employee.job_title || '' %>" placeholder="Senior Engineer">
+        </label>
+        <label>Department
+          <select name="department_id">
+            <option value="">— Select —</option>
+            <% departments.forEach(function(d) { %>
+              <option value="<%= d.id %>" <%= String(employee.department_id) === String(d.id) ? 'selected' : '' %>><%= d.name %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label>Employee Code
+          <input type="text" name="employee_code" value="<%= employee.employee_code || '' %>" placeholder="EMP-1001">
+        </label>
+        <label>Status
+          <select name="status">
+            <option value="active" <%= employee.status === 'active' ? 'selected' : '' %>>Active</option>
+            <option value="on_leave" <%= employee.status === 'on_leave' ? 'selected' : '' %>>On Leave</option>
+            <option value="inactive" <%= employee.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+          </select>
+        </label>
+        <label>Hire Date
+          <input type="date" name="hire_date" value="<%= employee.hire_date ? employee.hire_date.split('T')[0] : '' %>">
+        </label>
+        <label>Location
+          <input type="text" name="location" value="<%= employee.location || '' %>" placeholder="San Francisco, USA">
+        </label>
+
+        <label class="span-2">Bio
+          <textarea name="bio" rows="3" placeholder="A short professional bio..."><%= employee.bio || '' %></textarea>
+        </label>
+
+        <label class="span-2">Skills <small>(comma-separated)</small>
+          <input type="text" name="skills" value="<%= employee.skills || '' %>" placeholder="React, Node.js, SQL">
+        </label>
+
+        <label>Avatar Image URL
+          <input type="url" name="avatar_url_manual" value="<%= employee.avatar_url && employee.avatar_url.startsWith('http') ? employee.avatar_url : '' %>" placeholder="https://...">
+        </label>
+        <label>Or Upload Avatar
+          <input type="file" name="avatar_file" accept="image/*">
+        </label>
+
+        <label>LinkedIn URL
+          <input type="url" name="linkedin_url" value="<%= employee.linkedin_url || '' %>" placeholder="https://linkedin.com/in/...">
+        </label>
+        <label>GitHub URL
+          <input type="url" name="github_url" value="<%= employee.github_url || '' %>" placeholder="https://github.com/...">
+        </label>
+        <label>Twitter/X URL
+          <input type="url" name="twitter_url" value="<%= employee.twitter_url || '' %>" placeholder="https://x.com/...">
+        </label>
+
+        <label class="checkbox-label span-2">
+          <input type="checkbox" name="is_featured" value="1" <%= employee.is_featured ? 'checked' : '' %>>
+          Feature this employee on the directory
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save Employee</button>
+        <a href="/admin/employees" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

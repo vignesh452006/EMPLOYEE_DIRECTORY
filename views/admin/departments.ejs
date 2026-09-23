@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1>Manage Departments</h1>
+  </header>
+
+  <section class="admin-grid-2">
+    <div class="panel fade-up">
+      <h2>Add Department</h2>
+      <form action="/admin/departments" method="POST" class="dept-form">
+        <label>Name
+          <input type="text" name="name" required placeholder="e.g. Legal">
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Add Department</button>
+      </form>
+    </div>
+
+    <div class="panel fade-up delay-1">
+      <h2>All Departments</h2>
+      <ul class="dept-list">
+        <% departments.forEach(function(d) { %>
+          <li>
+            <span class="dept-badge"><%= d.name %></span>
+            <span class="dept-count"><%= d.employee_count %> employee<%= d.employee_count === 1 ? '' : 's' %></span>
+            <form action="/admin/departments/<%= d.id %>?_method=DELETE" method="POST" class="inline-form" data-confirm="Delete '<%= d.name %>'? Employees keep their profile but lose this department tag.">
+              <button type="submit" class="table-action danger">Delete</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1>Manage Employees</h1>
+    <a href="/admin/employees/new" class="btn btn-primary">+ Add Employee</a>
+  </header>
+
+  <section class="panel fade-up">
+    <form class="admin-search-bar" method="GET" action="/admin/employees">
+      <input type="text" name="q" placeholder="Search employees by name, email, or role..." value="<%= search %>">
+      <button type="submit" class="btn btn-secondary">Search</button>
+      <% if (search) { %><a href="/admin/employees" class="btn btn-ghost">Clear</a><% } %>
+    </form>
+
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Employee</th><th>Role</th><th>Department</th><th>Status</th><th>Email</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <% if (!employees.length) { %>
+            <tr><td colspan="6" class="muted" style="text-align:center;padding:2rem;">No employees found.</td></tr>
+          <% } %>
+          <% employees.forEach(function(e) { %>
+            <tr>
+              <td class="cell-name">
+                <img src="<%= e.avatar_url || 'https://ui-avatars.com/api/?background=6366f1&color=fff&name=' + encodeURIComponent(e.full_name) %>" class="table-avatar">
+                <%= e.full_name %>
+              </td>
+              <td><%= e.job_title || '—' %></td>
+              <td>
+                <% if (e.department_name) { %>
+                  <span class="dept-badge"><%= e.department_name %></span>
+                <% } else { %>—<% } %>
+              </td>
+              <td><span class="status-pill status-<%= e.status %>"><%= e.status.replace('_',' ') %></span></td>
+              <td><%= e.email %></td>
+              <td class="actions-cell">
+                <a href="/employee/<%= e.id %>" target="_blank" class="table-action" title="View public profile">View</a>
+                <a href="/admin/employees/<%= e.id %>/edit" class="table-action">Edit</a>
+                <form action="/admin/employees/<%= e.id %>?_method=DELETE" method="POST" class="inline-form" data-confirm="Delete this employee? This cannot be undone.">
+                  <button type="submit" class="table-action danger">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if (totalPages > 1) { %>
+      <div class="pagination">
+        <% for (let p = 1; p <= totalPages; p++) { %>
+          <a class="page-link <%= p === safePage ? 'active' : '' %>" href="/admin/employees?q=<%= encodeURIComponent(search) %>&page=<%= p %>"><%= p %></a>
+        <% } %>
+      </div>
+    <% } %>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

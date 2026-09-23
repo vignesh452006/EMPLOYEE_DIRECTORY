@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/icon-sprite') %>
+
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <svg class="icon" style="width:34px;height:34px;color:var(--primary);"><use href="#icon-logo"></use></svg>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
+</div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+<div class="toast-stack" id="toastStack">
+  <%- include('partials/flash') %>
+</div>
+
+<%- include('partials/navbar') %>
+
+<section class="page-header">
+  <div class="container">
+    <h1 class="fade-up">Team Insights</h1>
+    <p class="fade-up delay-1">A quick analytical snapshot of the whole organization.</p>
+
+    <div class="hero-stats fade-up delay-2" style="margin-top:22px;">
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.total %>">0</span>
+        <span class="hero-stat-label">Team Members</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.departments %>">0</span>
+        <span class="hero-stat-label">Departments</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.locations %>">0</span>
+        <span class="hero-stat-label">Locations</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.avgTenure %>" data-decimal="1">0</span>
+        <span class="hero-stat-label">Avg. Years Tenure</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="container insights-main">
+  <div class="insights-grid">
+    <!-- Headcount by department -->
+    <div class="insights-panel fade-up">
+      <div class="insights-header">
+        <svg class="icon icon-md" style="color:var(--primary);"><use href="#icon-chart"></use></svg>
+        <h2>Headcount by Department</h2>
+      </div>
+      <div class="insight-bars">
+        <% var maxDeptCount = Math.max(...deptCounts.map(d => d.count), 1); %>
+        <% deptCounts.forEach(function(d) { %>
+          <div class="insight-row">
+            <span class="insight-label"><%= d.name %></span>
+            <div class="insight-track">
+              <div class="insight-fill" data-target="<%= (d.count / maxDeptCount) * 100 %>"></div>
+            </div>
+            <span class="insight-count"><%= d.count %></span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Status breakdown -->
+    <div class="insights-panel fade-up delay-1">
+      <div class="insights-header">
+        <svg class="icon icon-md" style="color:var(--primary);"><use href="#icon-check-circle"></use></svg>
+        <h2>Status Breakdown</h2>
+      </div>
+      <div class="insight-bars">
+        <% var maxStatusCount = Math.max(...statusCounts.map(s => s.count), 1); %>
+        <% statusCounts.forEach(function(s) { %>
+          <div class="insight-row">
+            <span class="insight-label" style="text-transform:capitalize;"><%= s.status.replace('_',' ') %></span>
+            <div class="insight-track">
+              <div class="insight-fill" data-target="<%= (s.count / maxStatusCount) * 100 %>"></div>
+            </div>
+            <span class="insight-count"><%= s.count %></span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Top locations -->
+    <div class="insights-panel fade-up delay-2">
+      <div class="insights-header">
+        <svg class="icon icon-md" style="color:var(--primary);"><use href="#icon-pin"></use></svg>
+        <h2>Top Locations</h2>
+      </div>
+      <div class="insight-bars">
+        <% var maxLocCount = Math.max(...locationCounts.map(l => l.count), 1); %>
+        <% locationCounts.forEach(function(l) { %>
+          <div class="insight-row">
+            <span class="insight-label"><%= l.location %></span>
+            <div class="insight-track">
+              <div class="insight-fill" data-target="<%= (l.count / maxLocCount) * 100 %>"></div>
+            </div>
+            <span class="insight-count"><%= l.count %></span>
+          </div>
+        <% }) %>
+        <% if (!locationCounts.length) { %><p class="muted">No location data yet.</p><% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="insights-cta fade-up delay-2">
+    <a href="/directory" class="btn btn-primary">
+      <svg class="icon icon-sm"><use href="#icon-search"></use></svg> Explore the Directory
+    </a>
+  </div>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg class="icon icon-md" style="transform:rotate(-90deg)"><use href="#icon-arrow-right"></use></svg>
+</button>
+
+<%- include('partials/footer') %>
+</body>
+</html>

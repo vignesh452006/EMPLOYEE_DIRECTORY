@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="login-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<div class="login-wrap">
+  <div class="login-card fade-up">
+    <div class="login-brand">
+      <svg class="icon icon-lg" style="color:var(--primary);"><use href="#icon-logo"></use></svg>
+      <span class="brand-text">Team<span class="accent">Base</span></span>
+    </div>
+    <h1>Admin Login</h1>
+    <p class="login-sub">Sign in to manage the employee directory.</p>
+
+    <form action="/admin/login" method="POST" class="login-form">
+      <label>Email
+        <input type="email" name="email" required placeholder="admin@company.com" autofocus>
+      </label>
+      <label>Password
+        <input type="password" name="password" required placeholder="••••••••">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </form>
+
+    <p class="login-hint">Default demo login: <code>admin@company.com</code> / <code>Admin@12345</code></p>
+    <a href="/" class="back-link">&larr; Back to public directory</a>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

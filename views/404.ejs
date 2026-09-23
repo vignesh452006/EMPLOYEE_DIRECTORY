@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/icon-sprite') %>
+<%- include('partials/navbar') %>
+<main class="container">
+  <div class="empty-state fade-up" style="margin-top: 4rem;">
+    <svg class="icon" style="width:56px;height:56px;color:var(--text-muted);margin-bottom:10px;"><use href="#icon-cone"></use></svg>
+    <h1>404 — Page Not Found</h1>
+    <p>The page you're looking for doesn't exist.</p>
+    <a href="/directory" class="btn btn-primary" style="margin-top:1rem;display:inline-block;">Back to Directory</a>
+  </div>
+</main>
+<%- include('partials/footer') %>
+</body>
+</html>

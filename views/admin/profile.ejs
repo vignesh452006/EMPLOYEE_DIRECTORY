@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1>My Profile</h1>
+  </header>
+
+  <section class="panel fade-up form-panel" style="max-width:520px;">
+    <h2>Account Details</h2>
+    <div class="profile-info-row"><span>Name</span><strong><%= currentAdmin.name %></strong></div>
+    <div class="profile-info-row"><span>Email</span><strong><%= currentAdmin.email %></strong></div>
+    <div class="profile-info-row"><span>Role</span><strong><%= currentAdmin.role.replace('_',' ') %></strong></div>
+
+    <hr class="divider">
+
+    <h2>Change Password</h2>
+    <form action="/admin/profile/password" method="POST" class="employee-form">
+      <label>Current Password
+        <input type="password" name="current_password" required>
+      </label>
+      <label>New Password
+        <input type="password" name="new_password" required minlength="8">
+      </label>
+      <label>Confirm New Password
+        <input type="password" name="confirm_password" required minlength="8">
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<% if (typeof success !== 'undefined' && success.length) { %>
+  <% success.forEach(function(msg) { %>
+    <div class="toast toast-success" data-autohide>
+      <svg class="icon icon-md toast-icon"><use href="#icon-check-circle"></use></svg><span><%= msg %></span>
+      <button class="toast-close" aria-label="Dismiss">
+        <svg class="icon icon-sm"><use href="#icon-close"></use></svg>
+      </button>
+    </div>
+  <% }) %>
+<% } %>
+<% if (typeof error !== 'undefined' && error.length) { %>
+  <% error.forEach(function(msg) { %>
+    <div class="toast toast-error" data-autohide>
+      <svg class="icon icon-md toast-icon"><use href="#icon-alert"></use></svg><span><%= msg %></span>
+      <button class="toast-close" aria-label="Dismiss">
+        <svg class="icon icon-sm"><use href="#icon-close"></use></svg>
+      </button>
+    </div>
+  <% }) %>
+<% } %>

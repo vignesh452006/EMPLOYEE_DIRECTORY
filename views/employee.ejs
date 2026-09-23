@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/icon-sprite') %>
+
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <svg class="icon" style="width:34px;height:34px;color:var(--primary);"><use href="#icon-logo"></use></svg>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
+</div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+<div class="toast-stack" id="toastStack"></div>
+<%- include('partials/navbar') %>
+
+<main class="container profile-main">
+  <a href="/directory" class="back-link fade-up">
+    <svg class="icon icon-sm" style="transform:rotate(180deg)"><use href="#icon-arrow-right"></use></svg>
+    Back to directory
+  </a>
+
+  <div class="profile-card fade-up delay-1 tilt-card">
+    <div class="card-spotlight"></div>
+    <button class="fav-btn" id="favBtn" data-id="<%= employee.id %>" aria-label="Save to favorites" style="top:20px;right:20px;">
+      <svg class="icon icon-md"><use href="#icon-heart"></use></svg>
+    </button>
+    <div class="profile-header">
+      <img src="<%= employee.avatar_url || 'https://ui-avatars.com/api/?background=6366f1&color=fff&size=256&name=' + encodeURIComponent(employee.full_name) %>" class="profile-avatar" alt="<%= employee.full_name %>">
+      <div class="profile-heading">
+        <h1><%= employee.full_name %> <span class="status-dot status-<%= employee.status %>" title="<%= employee.status %>"></span></h1>
+        <p class="profile-role"><%= employee.job_title || 'Team Member' %></p>
+        <% if (employee.department_name) { %>
+          <span class="dept-badge"><%= employee.department_name %></span>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (employee.bio) { %>
+      <p class="profile-bio"><%= employee.bio %></p>
+    <% } %>
+
+    <div class="profile-grid">
+      <div class="info-block">
+        <span class="info-label">Email</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <a href="mailto:<%= employee.email %>" class="info-value link"><%= employee.email %></a>
+          <button class="copy-btn" data-copy="<%= employee.email %>" title="Copy email">
+            <svg class="icon icon-sm"><use href="#icon-copy"></use></svg>
+          </button>
+        </div>
+      </div>
+      <% if (employee.phone) { %>
+      <div class="info-block">
+        <span class="info-label">Phone</span>
+        <a href="tel:<%= employee.phone %>" class="info-value link"><%= employee.phone %></a>
+      </div>
+      <% } %>
+      <% if (employee.location) { %>
+      <div class="info-block">
+        <span class="info-label">Location</span>
+        <span class="info-value"><svg class="icon icon-sm"><use href="#icon-pin"></use></svg> <%= employee.location %></span>
+      </div>
+      <% } %>
+      <% if (employee.employee_code) { %>
+      <div class="info-block">
+        <span class="info-label">Employee ID</span>
+        <span class="info-value"><%= employee.employee_code %></span>
+      </div>
+      <% } %>
+      <% if (employee.hire_date) { %>
+      <div class="info-block">
+        <span class="info-label">Hire Date</span>
+        <span class="info-value"><%= new Date(employee.hire_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+      </div>
+      <% } %>
+    </div>
+
+    <% if (employee.skills) { %>
+      <div class="skills-wrap">
+        <span class="info-label">Skills</span>
+        <div class="skill-tags">
+          <% employee.skills.split(',').forEach(function(skill) { %>
+            <span class="skill-tag"><%= skill.trim() %></span>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="social-links profile-actions">
+      <% if (employee.linkedin_url) { %><a href="<%= employee.linkedin_url %>" target="_blank" rel="noopener" class="social-btn">LinkedIn</a><% } %>
+      <% if (employee.github_url) { %><a href="<%= employee.github_url %>" target="_blank" rel="noopener" class="social-btn">GitHub</a><% } %>
+      <% if (employee.twitter_url) { %><a href="<%= employee.twitter_url %>" target="_blank" rel="noopener" class="social-btn">Twitter</a><% } %>
+      <a href="/employee/<%= employee.id %>/vcard" class="social-btn">
+        <svg class="icon icon-sm"><use href="#icon-download"></use></svg> Save Contact
+      </a>
+      <button class="social-btn" id="shareBtn" data-url="/employee/<%= employee.id %>">
+        <svg class="icon icon-sm"><use href="#icon-share"></use></svg> Share
+      </button>
+      <button class="social-btn" onclick="window.print()">
+        <svg class="icon icon-sm"><use href="#icon-monitor"></use></svg> Print
+      </button>
+    </div>
+  </div>
+
+  <% if (related && related.length) { %>
+    <h2 class="section-title fade-up">More in <%= employee.department_name %></h2>
+    <div class="employee-grid">
+      <% related.forEach(function(r, i) { %>
+        <a href="/employee/<%= r.id %>" class="employee-card fade-up" style="animation-delay: <%= i * 0.05 %>s">
+          <div class="card-top">
+            <img src="<%= r.avatar_url || 'https://ui-avatars.com/api/?background=6366f1&color=fff&name=' + encodeURIComponent(r.full_name) %>" alt="<%= r.full_name %>" class="avatar">
+            <span class="status-dot status-<%= r.status %>"></span>
+          </div>
+          <h3 class="emp-name"><%= r.full_name %></h3>
+          <p class="emp-role"><%= r.job_title || 'Team Member' %></p>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg class="icon icon-md" style="transform:rotate(-90deg)"><use href="#icon-arrow-right"></use></svg>
+</button>
+
+<%- include('partials/footer') %>
+</body>
+</html>

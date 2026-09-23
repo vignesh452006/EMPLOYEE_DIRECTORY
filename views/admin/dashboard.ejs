@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1>Dashboard</h1>
+    <a href="/admin/employees/new" class="btn btn-primary">+ Add Employee</a>
+  </header>
+
+  <section class="stat-grid">
+    <div class="stat-card fade-up">
+      <svg class="icon stat-icon"><use href="#icon-users"></use></svg>
+      <div><p class="stat-value"><%= stats.total %></p><p class="stat-label">Total Employees</p></div>
+    </div>
+    <div class="stat-card fade-up delay-1">
+      <svg class="icon stat-icon"><use href="#icon-check-circle"></use></svg>
+      <div><p class="stat-value"><%= stats.active %></p><p class="stat-label">Active</p></div>
+    </div>
+    <div class="stat-card fade-up delay-2">
+      <svg class="icon stat-icon"><use href="#icon-clock"></use></svg>
+      <div><p class="stat-value"><%= stats.onLeave %></p><p class="stat-label">On Leave</p></div>
+    </div>
+    <div class="stat-card fade-up delay-3">
+      <svg class="icon stat-icon"><use href="#icon-building"></use></svg>
+      <div><p class="stat-value"><%= stats.deptCount %></p><p class="stat-label">Departments</p></div>
+    </div>
+  </section>
+
+  <section class="admin-grid-2">
+    <div class="panel fade-up">
+      <h2>Employees by Department</h2>
+      <div class="bar-chart">
+        <% var maxCount = Math.max(...byDept.map(d => d.count), 1); %>
+        <% byDept.forEach(function(d) { %>
+          <div class="bar-row">
+            <span class="bar-label"><%= d.name %></span>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: <%= (d.count / maxCount) * 100 %>%"></div>
+            </div>
+            <span class="bar-count"><%= d.count %></span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="panel fade-up delay-1">
+      <h2>Recent Activity</h2>
+      <ul class="activity-list">
+        <% if (!activity.length) { %><li class="muted">No activity yet.</li><% } %>
+        <% activity.forEach(function(a) { %>
+          <li>
+            <span class="activity-dot activity-<%= a.action %>"></span>
+            <div>
+              <p><strong><%= a.admin_name || 'System' %></strong> <%= a.action %>d <%= a.target_type %> — <%= a.details %></p>
+              <span class="activity-time"><%= new Date(a.created_at).toLocaleString() %></span>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+      <a href="/admin/activity" class="see-all">See full activity log →</a>
+    </div>
+  </section>
+
+  <section class="panel fade-up delay-2">
+    <div class="panel-header">
+      <h2>Recently Added Employees</h2>
+      <a href="/admin/employees" class="see-all">View all →</a>
+    </div>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        <% recent.forEach(function(e) { %>
+          <tr>
+            <td class="cell-name">
+              <img src="<%= e.avatar_url || 'https://ui-avatars.com/api/?background=6366f1&color=fff&name=' + encodeURIComponent(e.full_name) %>" class="table-avatar">
+              <%= e.full_name %>
+            </td>
+            <td><%= e.job_title || '—' %></td>
+            <td><%= e.department_name || '—' %></td>
+            <td><span class="status-pill status-<%= e.status %>"><%= e.status %></span></td>
+            <td><a href="/admin/employees/<%= e.id %>/edit" class="table-action">Edit</a></td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

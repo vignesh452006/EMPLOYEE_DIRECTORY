@@ -1,0 +1,40 @@
+<aside class="admin-sidebar" id="adminSidebar">
+  <div class="admin-brand">
+    <svg class="icon icon-lg" style="color:var(--primary);"><use href="#icon-logo"></use></svg>
+    <span class="brand-text">Team<span class="accent">Base</span></span>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="/admin/dashboard" class="admin-nav-link <%= currentPath === '/admin/dashboard' ? 'active' : '' %>">
+      <svg class="icon icon-md nav-ic"><use href="#icon-chart"></use></svg> Dashboard
+    </a>
+    <a href="/admin/employees" class="admin-nav-link <%= currentPath.startsWith('/admin/employees') ? 'active' : '' %>">
+      <svg class="icon icon-md nav-ic"><use href="#icon-users"></use></svg> Employees
+    </a>
+    <a href="/admin/departments" class="admin-nav-link <%= currentPath === '/admin/departments' ? 'active' : '' %>">
+      <svg class="icon icon-md nav-ic"><use href="#icon-building"></use></svg> Departments
+    </a>
+    <a href="/admin/activity" class="admin-nav-link <%= currentPath === '/admin/activity' ? 'active' : '' %>">
+      <svg class="icon icon-md nav-ic"><use href="#icon-clock"></use></svg> Activity Log
+    </a>
+    <a href="/admin/profile" class="admin-nav-link <%= currentPath === '/admin/profile' ? 'active' : '' %>">
+      <svg class="icon icon-md nav-ic"><use href="#icon-settings"></use></svg> My Profile
+    </a>
+    <a href="/" class="admin-nav-link" target="_blank">
+      <svg class="icon icon-md nav-ic"><use href="#icon-globe"></use></svg> View Site
+    </a>
+  </nav>
+
+  <div class="admin-sidebar-footer">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= currentAdmin.name.charAt(0).toUpperCase() %></div>
+      <div>
+        <p class="admin-user-name"><%= currentAdmin.name %></p>
+        <p class="admin-user-role"><%= currentAdmin.role.replace('_', ' ') %></p>
+      </div>
+    </div>
+    <form action="/admin/logout" method="POST">
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </div>
+</aside>

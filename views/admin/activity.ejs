@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin_head') %>
+</head>
+<body class="admin-body">
+<%- include('../partials/icon-sprite') %>
+<div class="toast-stack" id="toastStack">
+  <%- include('../partials/flash') %>
+</div>
+
+<%- include('../partials/admin_sidebar') %>
+
+<main class="admin-main">
+  <header class="admin-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+      <svg class="icon icon-lg"><use href="#icon-list"></use></svg>
+    </button>
+    <h1>Activity Log</h1>
+  </header>
+
+  <section class="panel fade-up">
+    <ul class="activity-list full">
+      <% if (!activity.length) { %><li class="muted">No activity recorded yet.</li><% } %>
+      <% activity.forEach(function(a) { %>
+        <li>
+          <span class="activity-dot activity-<%= a.action %>"></span>
+          <div>
+            <p><strong><%= a.admin_name || 'System' %></strong> <%= a.action %>d <%= a.target_type %><% if (a.details) { %> — <%= a.details %><% } %></p>
+            <span class="activity-time"><%= new Date(a.created_at).toLocaleString() %></span>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+</main>
+
+<script src="/js/main.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

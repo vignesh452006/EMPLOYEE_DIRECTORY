@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/icon-sprite') %>
+
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <svg class="icon" style="width:34px;height:34px;color:var(--primary);"><use href="#icon-logo"></use></svg>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
+</div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+<div class="toast-stack" id="toastStack">
+  <%- include('partials/flash') %>
+</div>
+
+<%- include('partials/navbar') %>
+
+<!-- ============ CINEMATIC HERO ============ -->
+<section class="hero hero-cinematic">
+  <div class="hero-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+  <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="hero-eyebrow fade-up">
+      <span class="pulse-dot"></span> Live directory · <%= heroStats.total %> active team members
+    </div>
+
+    <h1 class="hero-title reveal-title">
+      <span class="reveal-word">Find</span>
+      <span class="reveal-word">anyone</span>
+      <span class="reveal-word">on</span>
+      <span class="reveal-word">the</span>
+      <span class="reveal-word grad-text">team,</span>
+      <span class="reveal-word grad-text">instantly.</span>
+    </h1>
+    <p class="hero-sub fade-up delay-2">Search by name, role, or skill. Browse departments. Reach out in one click.</p>
+
+    <div class="hero-cta fade-up delay-3">
+      <a href="/directory" class="btn btn-primary">
+        <svg class="icon icon-sm"><use href="#icon-search"></use></svg> Browse Directory
+      </a>
+      <a href="/insights" class="btn btn-ghost">
+        <svg class="icon icon-sm"><use href="#icon-chart"></use></svg> View Team Insights
+      </a>
+    </div>
+
+    <!-- Animated stat counters -->
+    <div class="hero-stats fade-up delay-3">
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.total %>">0</span>
+        <span class="hero-stat-label">Team Members</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.departments %>">0</span>
+        <span class="hero-stat-label">Departments</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.locations %>">0</span>
+        <span class="hero-stat-label">Locations</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="counter" data-count="<%= heroStats.avgTenure %>" data-decimal="1">0</span>
+        <span class="hero-stat-label">Avg. Years Tenure</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED CAROUSEL ============ -->
+<% if (featured && featured.length) { %>
+<section class="featured-section">
+  <div class="container">
+    <div class="section-heading fade-up">
+      <h2><svg class="icon icon-md" style="color:var(--primary);vertical-align:-3px;"><use href="#icon-sparkle"></use></svg> Spotlight Team Members</h2>
+      <div class="carousel-controls">
+        <button class="carousel-btn" id="carouselPrev" aria-label="Previous">
+          <svg class="icon icon-sm" style="transform:rotate(180deg)"><use href="#icon-arrow-right"></use></svg>
+        </button>
+        <button class="carousel-btn" id="carouselNext" aria-label="Next">
+          <svg class="icon icon-sm"><use href="#icon-arrow-right"></use></svg>
+        </button>
+      </div>
+    </div>
+    <div class="carousel-track-wrap fade-up delay-1">
+      <div class="carousel-track" id="carouselTrack">
+        <% featured.forEach(function(f) { %>
+          <a href="/employee/<%= f.id %>" class="spotlight-card">
+            <div class="spotlight-img-wrap">
+              <img src="<%= f.avatar_url || 'https://ui-avatars.com/api/?background=111111&color=fff&size=300&name=' + encodeURIComponent(f.full_name) %>" alt="<%= f.full_name %>" loading="lazy">
+              <div class="spotlight-overlay"></div>
+              <% if (f.department_name) { %>
+                <span class="dept-badge spotlight-badge"><%= f.department_name %></span>
+              <% } %>
+            </div>
+            <div class="spotlight-info">
+              <h3><%= f.full_name %></h3>
+              <p><%= f.job_title || 'Team Member' %></p>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- ============ QUICK LINK CARDS ============ -->
+<section class="quicklinks-section">
+  <div class="container quicklinks-grid">
+    <a href="/directory" class="quicklink-card fade-up">
+      <svg class="icon icon-lg"><use href="#icon-users"></use></svg>
+      <h3>Directory</h3>
+      <p>Search, filter, and browse every team member.</p>
+      <span class="quicklink-arrow"><svg class="icon icon-sm"><use href="#icon-arrow-right"></use></svg></span>
+    </a>
+    <a href="/insights" class="quicklink-card fade-up delay-1">
+      <svg class="icon icon-lg"><use href="#icon-chart"></use></svg>
+      <h3>Team Insights</h3>
+      <p>Headcount, status mix, and location breakdowns.</p>
+      <span class="quicklink-arrow"><svg class="icon icon-sm"><use href="#icon-arrow-right"></use></svg></span>
+    </a>
+    <a href="/admin/dashboard" class="quicklink-card fade-up delay-2">
+      <svg class="icon icon-lg"><use href="#icon-lock"></use></svg>
+      <h3>Admin Panel</h3>
+      <p>Manage employees, departments, and activity.</p>
+      <span class="quicklink-arrow"><svg class="icon icon-sm"><use href="#icon-arrow-right"></use></svg></span>
+    </a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+</body>
+</html>

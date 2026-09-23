@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('partials/head') %>
+</head>
+<body>
+<%- include('partials/icon-sprite') %>
+
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <svg class="icon" style="width:34px;height:34px;color:var(--primary);"><use href="#icon-logo"></use></svg>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+  </div>
+</div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-spotlight" id="cursorSpotlight"></div>
+
+<div class="toast-stack" id="toastStack">
+  <%- include('partials/flash') %>
+</div>
+
+<%- include('partials/navbar') %>
+
+<section class="page-header">
+  <div class="container">
+    <h1 class="fade-up">Employee Directory</h1>
+    <p class="fade-up delay-1">Search by name, role, or skill. Filter by department or status.</p>
+
+    <form class="search-bar fade-up delay-2" id="searchForm">
+      <div class="search-input-wrap">
+        <svg class="icon search-icon"><use href="#icon-search"></use></svg>
+        <input type="text" name="q" id="searchInput" placeholder="Search by name, role, or skill... (press / to focus)" value="<%= search %>" autocomplete="off">
+      </div>
+
+      <select name="department" id="departmentFilter" class="filter-select">
+        <option value="">All Departments</option>
+        <% departments.forEach(function(d) { %>
+          <option value="<%= d.id %>" <%= (String(department) === String(d.id)) ? 'selected' : '' %>><%= d.name %></option>
+        <% }) %>
+      </select>
+
+      <select name="status" id="statusFilter" class="filter-select">
+        <option value="">Any Status</option>
+        <option value="active" <%= status === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="on_leave" <%= status === 'on_leave' ? 'selected' : '' %>>On Leave</option>
+        <option value="inactive" <%= status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+      </select>
+
+      <select name="sort" id="sortSelect" class="filter-select">
+        <option value="name_asc" <%= sort === 'name_asc' ? 'selected' : '' %>>Name A–Z</option>
+        <option value="name_desc" <%= sort === 'name_desc' ? 'selected' : '' %>>Name Z–A</option>
+        <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest Hires</option>
+        <option value="oldest" <%= sort === 'oldest' ? 'selected' : '' %>>Longest Tenure</option>
+      </select>
+    </form>
+  </div>
+</section>
+
+<!-- ============ DEPARTMENT CHIPS ============ -->
+<section class="chips-section">
+  <div class="container">
+    <div class="dept-chip-row fade-up" id="deptChipRow">
+      <a href="/directory?department=" class="dept-chip <%= !department ? 'active' : '' %>">All <span class="chip-count"><%= total %></span></a>
+      <% departments.forEach(function(d) { %>
+        <a href="/directory?department=<%= d.id %>" class="dept-chip <%= String(department) === String(d.id) ? 'active' : '' %>">
+          <%= d.name %>
+        </a>
+      <% }) %>
+      <button type="button" class="dept-chip" id="favChip" data-active="false">
+        <svg class="icon icon-sm"><use href="#icon-heart"></use></svg> Favorites <span class="chip-count" id="favChipCount">0</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<main class="container directory-main">
+  <div class="directory-meta">
+    <span id="resultCount"><strong><%= total %></strong> team member<%= total === 1 ? '' : 's' %> found</span>
+
+    <div class="toolbar-actions">
+      <a class="icon-btn" href="/export/csv?q=<%= encodeURIComponent(search) %>&department=<%= department %>&status=<%= status %>" title="Export current results to CSV">
+        <svg class="icon icon-sm"><use href="#icon-download"></use></svg> Export CSV
+      </a>
+      <div class="view-toggle">
+        <button class="view-btn <%= view === 'grid' ? 'active' : '' %>" data-view="grid" aria-label="Grid view">
+          <svg class="icon icon-md"><use href="#icon-grid"></use></svg>
+        </button>
+        <button class="view-btn <%= view === 'list' ? 'active' : '' %>" data-view="list" aria-label="List view">
+          <svg class="icon icon-md"><use href="#icon-list"></use></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="employeeGrid" class="employee-grid <%= view === 'list' ? 'list-mode' : '' %>" data-view="<%= view %>">
+    <% if (employees.length === 0) { %>
+      <div class="empty-state fade-up">
+        <svg class="icon" style="width:44px;height:44px;color:var(--text-muted);"><use href="#icon-search"></use></svg>
+        <h3>No employees match your search</h3>
+        <p>Try adjusting your filters or search terms.</p>
+      </div>
+    <% } %>
+    <% employees.forEach(function(emp, i) { %>
+      <a href="/employee/<%= emp.id %>" class="employee-card tilt-card fade-up" data-emp-id="<%= emp.id %>" style="animation-delay: <%= Math.min(i * 0.05, 0.5) %>s">
+        <div class="card-spotlight"></div>
+        <button class="fav-btn" data-id="<%= emp.id %>" aria-label="Save to favorites" onclick="event.preventDefault(); event.stopPropagation(); window.toggleFavorite(this);">
+          <svg class="icon icon-sm"><use href="#icon-heart"></use></svg>
+        </button>
+        <div class="card-top">
+          <img src="<%= emp.avatar_url || 'https://ui-avatars.com/api/?background=111111&color=fff&name=' + encodeURIComponent(emp.full_name) %>" alt="<%= emp.full_name %>" class="avatar" loading="lazy">
+          <span class="status-dot status-<%= emp.status %>" title="<%= emp.status %>"></span>
+        </div>
+        <h3 class="emp-name"><%= emp.full_name %></h3>
+        <p class="emp-role"><%= emp.job_title || 'Team Member' %></p>
+        <% if (emp.department_name) { %>
+          <span class="dept-badge"><%= emp.department_name %></span>
+        <% } %>
+        <div class="card-footer">
+          <span class="emp-location"><svg class="icon icon-sm"><use href="#icon-pin"></use></svg> <%= emp.location || '—' %></span>
+          <svg class="icon icon-sm card-arrow"><use href="#icon-arrow-right"></use></svg>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+
+  <% if (totalPages > 1) { %>
+    <div class="pagination">
+      <% for (let p = 1; p <= totalPages; p++) { %>
+        <a class="page-link <%= p === safePage ? 'active' : '' %>"
+           href="/directory?q=<%= encodeURIComponent(search) %>&department=<%= department %>&status=<%= status %>&sort=<%= sort %>&view=<%= view %>&page=<%= p %>"><%= p %></a>
+      <% } %>
+    </div>
+  <% } %>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg class="icon icon-md" style="transform:rotate(-90deg)"><use href="#icon-arrow-right"></use></svg>
+</button>
+
+<%- include('partials/footer') %>
+</body>
+</html>
